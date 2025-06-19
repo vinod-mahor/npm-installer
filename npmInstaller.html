@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.css">
+    <title>npm installer</title>
+    <style>
+        .packages-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: url("background.svg") no-repeat center center;
+            background-size: cover;
+        }
+
+        .package-wrapper {
+            background: rgba(255, 255, 255, 0.733);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 2rem 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            flex-direction: column;
+            max-width: 70vw;
+            align-content: center;
+        }
+
+        .command-container {
+            padding: 20px;
+            outline: none !important;
+            border: none;
+        }
+
+        label {
+            padding: 0.3rem;
+            cursor: pointer;
+        }
+
+        label>input {
+            padding: 0.1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="packages-container">
+        <div class="package-wrapper form-floating">
+            <h1 class="main-heading display-4">NPM Installer</h1>
+            <p class="lead sub-heading">Select to install</p>
+            <div class=" package-list-wrapper">
+                <div class="package-box" id="package-box">
+                    <!-- content will come here by javascript -->
+                </div>
+                <div class="command-container">
+                    <textarea class="textarea form-control" name="command" id="textarea"></textarea>
+                </div>
+                <div class="button-wrapper text-center">
+                    <button class="btn btn-sm btn-primary" id="copy-btn">Copy</button>
+                    <button class="btn btn-sm btn-outline-danger" id="reset-btn">Reset</button>
+                    <button class="btn btn-sm btn-secondary" value="uninstall" id="status-btn">Uninstall</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+
+<script>
+    const allPackages = [
+        {
+            name: "Express",
+            installCommand: "npm i express",
+            singleCommand: "express",
+            version: "5.1.0"
+        },
+        {
+            name: "Express-session",
+            installCommand: "npm i express-session",
+            singleCommand: "express-session",
+            version: "1.18.1"
+        },
+        {
+            name: "Nodemon",
+            installCommand: "npm i nodemon",
+            singleCommand: "nodemon",
+            version: "3.1.10"
+        },
+        {
+            name: "Ejs",
+            installCommand: "npm i ejs",
+            singleCommand: "ejs",
+            version: "3.1.10"
+        },
+        {
+            name: "Ejs Layout",
+            installCommand: "npm i express-ejs-layouts",
+            singleCommand: "express-ejs-layouts",
+            version: "2.5.1"
+        },
+        {
+            name: "Mongoose",
+            installCommand: "npm i mongoose",
+            singleCommand: "mongoose",
+            version: "8.16.0"
+        },
+        {
+            name: "Cors",
+            installCommand: "npm i cors",
+            singleCommand: "cors",
+            version: "2.8.5"
+        },
+        {
+            name: "Connect-flash",
+            installCommand: "npm i connect-flash",
+            singleCommand: "connect-flash",
+            version: "0.1.1"
+        },
+        {
+            name: "Slugify",
+            installCommand: "npm i slugify",
+            singleCommand: "slugify",
+            version: "1.6.0"
+        },
+        {
+            name: "Mongoose-paginate-v2",
+            installCommand: "npm i mongoose-paginate-v2",
+            singleCommand: "mongoose-paginate-v2",
+            version: "8.16.0"
+        },
+        {
+            name: "JWT",
+            installCommand: "npm i jsonwebtoken",
+            singleCommand: "jsonwebtoken",
+            version: "9.0.2"
+        },
+        {
+            name: "Express-validator",
+            installCommand: "npm i express-validator",
+            singleCommand: "express-validator",
+            version: "7.2.1"
+        },
+        {
+            name: "Bcrypt",
+            installCommand: "npm i bcrypt",
+            singleCommand: "bcrypt",
+            version: "6.0.0"
+        },
+        {
+            name: "DotENV",
+            installCommand: "npm i dotenv",
+            singleCommand: "dotenv",
+            version: "16.5.0"
+        },
+        {
+            name: "Socket.IO",
+            installCommand: "npm i socket.io",
+            singleCommand: "socket.io",
+            version: "4.8.1"
+        },
+        {
+            name: "Tabulator",
+            installCommand: "npm i tabulator-tables",
+            singleCommand: "tabulator-tables",
+            version: "6.3.1"
+        },
+        {
+            name: "Passport-google-OAuth20",
+            installCommand: "npm i passport-google-oauth20",
+            singleCommand: "passport-google-oauth20",
+            version: "2.0.0"
+        },
+        {
+            name: "Passport",
+            installCommand: "npm i passport",
+            singleCommand: "passport",
+            version: "0.7.1"
+        },
+        {
+            name: "CSRF",
+            installCommand: "npm i csurf",
+            singleCommand: "csurf",
+            version: "1.11.0"
+        },
+        {
+            name: "Socket.IO Client",
+            installCommand: "npm i socket.io-client",
+            singleCommand: "socket.io-client",
+            version: "4.8.1"
+        },
+        {
+            name: "Axios",
+            installCommand: "npm i axios",
+            singleCommand: "axios",
+            version: "1.10.0 "
+        },
+        {
+            name: "SweetAlert2",
+            installCommand: "npm i sweetalert2",
+            singleCommand: "sweetalert2",
+            version: "11.22.0"
+        },
+        {
+            name: "CookieParser",
+            installCommand: "npm i cookie-parser",
+            singleCommand: "cookie-parser",
+            version: "1.4.7"
+        },
+        {
+            name: "Express rate limit",
+            installCommand: "npm i express-rate-limit",
+            singleCommand: "express-rate-limit",
+            version: "7.5.0 "
+        },
+        {
+            name: "Express Helmet",
+            installCommand: "npm i helmet",
+            singleCommand: "helmet",
+            version: "8.1.0 "
+        },
+        {
+            name: "Nodemailer",
+            installCommand: "npm i nodemailer",
+            singleCommand: "nodemailer",
+            version: "7.0.3"
+        },
+        {
+            name: "Twilio",
+            installCommand: "npm i twilio",
+            singleCommand: "twilio",
+            version: "5.7.1"
+        },
+        {
+            name: "Multer",
+            installCommand: "npm i multer",
+            singleCommand: "multer",
+            version: "2.0.1"
+        },
+        {
+            name: "React-redux",
+            installCommand: "npm i react-redux",
+            singleCommand: "react-redux",
+            version: "9.2.0"
+        },
+        {
+            name: "Redux Toolkit",
+            installCommand: "npm i @reduxjs/toolkit",
+            singleCommand: "@reduxjs/toolkit",
+            version: "2.8.2"
+        },
+        {
+            name: "React-router",
+            installCommand: "npm i react-router",
+            singleCommand: "react-router",
+            version: "7.6.2 "
+        },
+        {
+            name: "React-bootstrap",
+            installCommand: "npm i react-bootstrap",
+            singleCommand: "react-bootstrap",
+            version: "2.10.10"
+        },
+    ];
+
+    const packageBox = document.getElementById("package-box");
+    const copyBtn = document.getElementById("copy-btn");
+    const resetBtn = document.getElementById("reset-btn");
+    const statusBtn = document.getElementById("status-btn");
+    const textArea = document.getElementById("textarea");
+    const mainHeading = document.querySelector(".main-heading");
+    const subHeading = document.querySelector(".sub-heading");
+    let toolType = "install";
+    // Remove this line, will select checkboxes dynamically when needed
+    const addedPackage = [];
+
+    const resetData = () => {
+        // Select checkboxes after they are rendered
+        document.querySelectorAll(".form-check-input").forEach((checkbox) => checkbox.checked = false);
+        resetAllPackages();
+        updateTextarea(toolType);
+    };
+    const updateTextarea = (type) => {
+        textArea.value = `npm ${type} ${addedPackage.map(pkg => pkg.singleCommand).join(" ")}`;
+    }
+    const resetAllPackages = () => {
+        addedPackage.length = 0;
+    };
+    const addPackage = (i) => {
+        if (!(addedPackage.includes(allPackages[i]))) {
+            addedPackage.push(allPackages[i]);
+            updateTextarea(toolType);
+        } else {
+            const indexToDelete = addedPackage.indexOf(allPackages[i]);
+            addedPackage.splice(indexToDelete, 1);
+            updateTextarea(toolType);
+        }
+    }
+    const showPackages = () => {
+        allPackages.forEach((package, ind, arr) => {
+            const newLabel = document.createElement("label")
+            newLabel.innerHTML = `
+            <input type="checkbox" onChange="addPackage(${ind})" class="form-check-input" id="package${ind}" value=${package.name}> ${package.name}
+            `;
+            packageBox.appendChild(newLabel);
+
+        });
+
+        updateTextarea(toolType);
+    }
+
+    showPackages();
+    resetBtn.addEventListener("click", () => {
+        resetData();
+    });
+    copyBtn.addEventListener("click", () => {
+        copyBtn.innerHTML = "Copied.."
+        copyBtn.classList.remove("btn-primary");
+        copyBtn.classList.add("btn-success");
+        textArea.select();
+        // For mobile devices, ensure the entire content is selected
+        textArea.setSelectionRange(0, 99999);
+        // Execute the copy command
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        textArea.blur();
+        setTimeout(() => {
+            copyBtn.innerHTML = "Copy";
+            copyBtn.classList.remove("btn-success");
+            copyBtn.classList.add("btn-primary");
+        }, 1000);
+    });
+
+    statusBtn.addEventListener("click", () => {
+        if (statusBtn.value == "uninstall") {
+
+            statusBtn.value = "install";
+            statusBtn.innerHTML = "Installer";
+            toolType = "unistall"
+            mainHeading.innerHTML = "NPM Uninstaller";
+            subHeading.innerHTML = "Select to uninstall";
+            updateTextarea(toolType);
+
+        } else if (statusBtn.value == "install") {
+
+            statusBtn.value = "uninstall";
+            statusBtn.innerHTML = "Uninstaller";
+            toolType = "install";
+            mainHeading.innerHTML = "NPM Installer";
+            subHeading.innerHTML = "Select to install";
+            updateTextarea(toolType);
+        }
+    });
+
+</script>
+
+</html>
